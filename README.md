@@ -1,3 +1,5 @@
+<h2>Experimental esbuild fork that doesn't simplify whitespace in &lt;Markdown&gt; components</h2>
+
 <p align="center">
   <img src="./images/wordmark.svg" alt="esbuild: An extremely fast JavaScript bundler">
   <br>

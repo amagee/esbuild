@@ -901,7 +901,7 @@ func (lexer *Lexer) NextJSXElementChild() {
 			lexer.Token = TStringLiteral
 			text := lexer.source.Contents[originalStart:lexer.end]
 
-			if needsFixing {
+			if false && needsFixing {
 				// Slow path
 				lexer.decodedStringLiteralOrNil = fixWhitespaceAndDecodeJSXEntities(text)
 
@@ -2279,6 +2279,8 @@ func fixWhitespaceAndDecodeJSXEntities(text string) []uint16 {
 
 	return decoded
 }
+
+var FixWhitespaceAndDecodeJSXEntities = fixWhitespaceAndDecodeJSXEntities
 
 // If this fails, this returns "nil, false, end" where "end" is the value to
 // store to "lexer.end" before calling "lexer.SyntaxError()" if relevant

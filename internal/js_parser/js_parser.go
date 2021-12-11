@@ -10998,7 +10998,7 @@ func (p *parser) visitExprInOut(expr js_ast.Expr, in exprIn) (js_ast.Expr, exprO
 			}
 		}
 
-		if p.options.jsx.Preserve {
+		if false && p.options.jsx.Preserve {
 			// If the tag is an identifier, mark it as needing to be upper-case
 			switch tag := e.TagOrNil.Data.(type) {
 			case *js_ast.EIdentifier:
@@ -11033,6 +11033,23 @@ func (p *parser) visitExprInOut(expr js_ast.Expr, in exprIn) (js_ast.Expr, exprO
 			}
 
 			// Call createElement()
+			var isMarkdown = false;
+			switch e.TagOrNil.Data.(type) {
+				case *js_ast.EIdentifier:
+					var tagName = p.symbols[e.TagOrNil.Data.(*js_ast.EIdentifier).Ref.InnerIndex].OriginalName
+					isMarkdown = (tagName == "Markdown")
+			}
+
+			if false && !isMarkdown {
+				for _, arg := range args {
+					switch data := arg.Data.(type) {
+					case *js_ast.EString:
+						var s = tostring(data.Value)
+						arg.Data.(*js_ast.EString).Value = js_lexer.FixWhitespaceAndDecodeJSXEntities(s)
+					}
+				}
+			}
+
 			target := p.jsxStringsToMemberExpression(expr.Loc, p.options.jsx.Factory.Parts)
 			p.warnAboutImportNamespaceCall(target, exprKindCall)
 			return js_ast.Expr{Loc: expr.Loc, Data: &js_ast.ECall{
@@ -12742,6 +12759,14 @@ func (p *parser) visitExprInOut(expr js_ast.Expr, in exprIn) (js_ast.Expr, exprO
 	}
 
 	return expr, exprOut{}
+}
+
+func tostring(characters []uint16) string {
+	var s = ""
+	for _, c := range characters {
+		s += string(c)
+	}
+	return s
 }
 
 func (p *parser) warnAboutImportNamespaceCall(target js_ast.Expr, kind importNamespaceCallKind) {
